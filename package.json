@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "eslint": "eslint src/**/*.js --cache",
-    "build": "babel src -d dist --source-maps",
-    "start": "npm run build --quiet && node dist/app",
+    "build": "babel src -d dist --source-maps -q",
+    "start": "npm run build && node dist/app",
     "test": "echo \"Will be implemented in future\" && exit 0"
   },
   "repository": {
