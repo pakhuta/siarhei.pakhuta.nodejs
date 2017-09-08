@@ -1,5 +1,5 @@
-const config = require('./config');
-const models = require('./models');
+import * as models from './models';
+import config from './config/json';
 
 console.log(`Application: "${config.name}" has been started`);
 

@@ -4,7 +4,9 @@
   "description": "nodejs training epam",
   "main": "index.js",
   "scripts": {
-    "start": "node app",
+    "eslint": "eslint src/**/*.js --cache",
+    "build": "babel src -d dist --source-maps",
+    "start": "npm run build --quiet && node dist/app",
     "test": "echo \"Will be implemented in future\" && exit 0"
   },
   "repository": {
@@ -22,8 +24,12 @@
   "homepage": "https://github.com/pakhuta/siarhei.pakhuta.nodejs#readme",
   "dependencies": {
     "babel": "6.23.0",
+    "babel-cli": "6.26.0",
     "babel-preset-es2015": "6.24.1",
     "babel-preset-stage-2": "6.24.1",
-    "babel-register": "6.26.0"
+    "babel-register": "6.26.0",
+    "eslint": "4.6.1",
+    "eslint-config-airbnb-base": "12.0.0",
+    "eslint-plugin-import": "2.7.0"
   }
 }
