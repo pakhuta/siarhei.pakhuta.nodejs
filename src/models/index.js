@@ -1,4 +1,2 @@
-import User from './user';
-import Product from './product';
-
-export { User, Product };
+export { default as Product } from './product';
+export { default as User } from './user';
