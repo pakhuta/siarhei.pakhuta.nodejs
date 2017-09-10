@@ -1,5 +1,5 @@
 import * as models from './models';
-import config from './config/json';
+import config from './config';
 
 console.log(`Application: "${config.name}" has been started`);
 
