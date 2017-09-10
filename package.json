@@ -1,0 +1,35 @@
+{
+  "name": "nodejs_training_epam",
+  "version": "1.0.0",
+  "description": "nodejs training epam",
+  "scripts": {
+    "eslint": "eslint src/**/*.js --cache",
+    "build": "babel src -d dist --source-maps --copy-files --quiet",
+    "start": "npm run build && node dist/app",
+    "test": "echo \"Will be implemented in future\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pakhuta/siarhei.pakhuta.nodejs.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "siarhei.pakhuta <siarhei_pakhuta@epam.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pakhuta/siarhei.pakhuta.nodejs/issues"
+  },
+  "homepage": "https://github.com/pakhuta/siarhei.pakhuta.nodejs#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-preset-env": "1.6.0",
+    "eslint": "4.6.1",
+    "eslint-config-airbnb-base": "12.0.0"
+  },
+  "engines": {
+    "node": "^8.2.1",
+    "npm": "^5.3.0"
+  }
+}
