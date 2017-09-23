@@ -21,9 +21,16 @@ export default class DirWatcher {
     }
 
     setPathWatcher(path) {
-        return fs.watch(path, (eventType, filename) => {
-            this.changedFiles.add(filename);
-        });
+        let watcher;
+        try {
+            watcher = fs.watch(path, (eventType, filename) => {
+                this.changedFiles.add(filename);
+            })
+        } catch (err) {
+            console.dir(err);
+        }
+
+        return watcher;
     }
 
     getHandler(path) {

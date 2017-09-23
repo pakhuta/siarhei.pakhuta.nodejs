@@ -22,4 +22,4 @@ dirWatcher.on('dirwatcher:changed', path => {
     }
 });
 
-dirWatcher.watch('data', 3000);
+dirWatcher.watch(`${__dirname}/data`, 3000);
