@@ -31,6 +31,19 @@
     ],
     "comma-dangle": [
       "off"
+    ],
+    "prefer-const": [
+      "off"
+    ],
+    "arrow-parens": [
+      "off"
+    ],
+    "import/extensions": [
+      "off"
+    ],
+    "max-len": [
+      "error",
+      140
     ]
   }
 }

@@ -1,8 +1,9 @@
 import ImporterUtils from './importerUtils';
 
 export default class Importer {
-    static import(path) {
-        return ImporterUtils.readFile(path).then(ImporterUtils.convertCSVToJSON);
+    static async import(path) {
+        let data = await ImporterUtils.readFile(path);
+        return ImporterUtils.convertCSVToJSON(data);
     }
 
     static importSync(path) {

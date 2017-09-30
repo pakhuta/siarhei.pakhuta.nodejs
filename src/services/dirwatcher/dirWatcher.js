@@ -25,7 +25,7 @@ export default class DirWatcher {
         try {
             watcher = fs.watch(path, (eventType, filename) => {
                 this.changedFiles.add(filename);
-            })
+            });
         } catch (err) {
             console.dir(err);
         }
@@ -41,7 +41,7 @@ export default class DirWatcher {
                     this.changedFiles.delete(fileName);
                 });
             }
-        }
+        };
     }
 
     on(...args) {
