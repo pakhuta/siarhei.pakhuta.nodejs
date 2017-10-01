@@ -16,7 +16,10 @@ export default class DirWatcher {
                 watcherParams.updateWatcherInterval(delay);
             }
         } else {
-            this.watchers.set(path, new WatcherParams(this.setPathWatcher(path), delay, this.getHandler(path)));
+            let watcher = this.setPathWatcher(path);
+            let handler = this.getHandler(path);
+            let watcherParams = new WatcherParams(watcher, delay, handler);
+            this.watchers.set(path, watcherParams);
         }
     }
 

@@ -27,4 +27,4 @@ dirWatcher.on('dirwatcher:changed', path => {
     }
 });
 
-dirWatcher.watch(`${__dirname}/data`, 3000);
+dirWatcher.watch(`${__dirname}/${config.dataPath}`, 3000);

@@ -16,7 +16,8 @@ export default class ImporterUtils {
         const valueDelimiter = ',';
         let dataArray = rawData.split(/\r\n|\n|\r/);
         let propertiesName = dataArray[0].split(valueDelimiter);
-        const convertedDataArray = dataArray.slice(1).map(data => new ConvertedDataItem(propertiesName, data.split(valueDelimiter)));
+        const convertedDataArray = dataArray.slice(1)
+            .map(data => new ConvertedDataItem(propertiesName, data.split(valueDelimiter)));
 
         return JSON.stringify(convertedDataArray);
     }
