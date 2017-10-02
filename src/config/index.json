@@ -1,3 +1,4 @@
 {
-  "name": "NodeMP HW App"
+  "name": "NodeMP HW App",
+  "dataPath": "../data"
 }
