@@ -23,7 +23,11 @@
   },
   "homepage": "https://github.com/pakhuta/siarhei.pakhuta.nodejs#readme",
   "dependencies": {
-    "eventemitter3": "2.0.3"
+    "eventemitter3": "2.0.3",
+    "minimist": "1.2.0",
+    "request": "2.83.0",
+    "split2": "2.2.0",
+    "through2": "2.0.3"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",

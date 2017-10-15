@@ -1,4 +1,24 @@
 {
   "name": "NodeMP HW App",
-  "dataPath": "../data"
+  "dataPath": "../data",
+  "argParams": {
+    "alias": {
+      "action": "a",
+      "file": "f",
+      "save": "s",
+      "path": "p",
+      "help": "h"
+    }
+  },
+  "helpFile": "../config/help.txt",
+  "messages": {
+    "argsNotDefined": "Arguments are not defined",
+    "wrongActionType": "Action \"$0\" is not found",
+    "requiredArgumentNotSpecified": "Required arguments: \"$0\" are not specified",
+    "fileNotFound": "File \"$0\" is not existed",
+    "typeDataToTransform": "Please, type data to transform: ",
+    "notSupportedFileFormats": "Supported only \"$0\" file formats",
+    "cssBundleSuccess": "CSS bundle \"$0\" has been successfully created",
+    "cssBundleFail": "Creating a CSS bundle \"$0\" has been failed"
+  }
 }

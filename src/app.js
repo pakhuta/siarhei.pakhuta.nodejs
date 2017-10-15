@@ -1,6 +1,10 @@
+import util from 'util';
 import * as models from './models';
 import * as services from './services';
 import config from './config';
+import * as utils from './utils';
+
+init();
 
 console.log(`Application: "${config.name}" has been started`);
 
@@ -28,3 +32,12 @@ dirWatcher.on('dirwatcher:changed', path => {
 });
 
 dirWatcher.watch(`${__dirname}/${config.dataPath}`, 3000);
+
+// use "streams.js" as module
+utils.Streams.printHelpMessage();
+
+function init() {
+    process.on('uncaughtException', err => {
+        console.error(util.format('Application got uncaught exception: %O', err));
+    });
+}
