@@ -2,12 +2,11 @@ import parseArgs from 'minimist';
 import path from 'path';
 import through2 from 'through2';
 import split2 from 'split2';
-import EventEmitter from 'eventemitter3';
+import request from 'request';
 import config from '../config';
 import output from './output';
 import File from './file';
 import StreamUtils from './streamUtils';
-import Queue from './queue';
 import * as services from '../services';
 
 const { ImporterUtils } = services;
@@ -85,43 +84,26 @@ export default class Streams {
             }));
     }
 
-    static cssBundler(dirPath) {
+    static async cssBundler(dirPath) {
         const bundleName = 'bundle.css';
-        let emitter = new EventEmitter();
+        const cssPattern = '**/*.css';
         let bundleFilePath = path.join(dirPath, bundleName);
         let writeStream = File.getWriteStream(bundleFilePath);
-        let filesQueue = new Queue(Streams.cssBundlerFileHandler.bind(null, writeStream), 1);
-        let isAddFilesEnded = false;
 
-        File.getFilesFromPath(dirPath, '.css', [bundleName], emitter);
+        try {
+            let cssFilesList = await File.getFilesFromPath(path.join(dirPath, cssPattern));
 
-        filesQueue.onQueueEmpty(() => {
-            if (isAddFilesEnded) {
-                StreamUtils.getExternalReadStream(externalCSS)
-                    .then(res => res.pipe(writeStream))
-                    .catch(err => writeStream.destroy(err));
-            }
-        });
-
-        emitter.on('readdirError', err => {
-            writeStream.destroy(err);
-        });
-
-        emitter.on('addFile', filePath => {
-            filesQueue.pushToQueue(filePath);
-        });
-
-        emitter.on('addFilesIsEnded', () => {
-            isAddFilesEnded = true;
-        });
-
-        writeStream.on('finish', () => {
-            output(config.messages.cssBundleSuccess, bundleFilePath);
-        });
-
-        writeStream.on('error', () => {
+            let sources = cssFilesList.concat(request.get(externalCSS));
+            Streams.combineStreams(sources, writeStream)
+                .on('finish', () => {
+                    output(config.messages.cssBundleSuccess, bundleFilePath);
+                })
+                .on('error', () => {
+                    output(config.messages.cssBundleFail, bundleFilePath);
+                });
+        } catch (err) {
             output(config.messages.cssBundleFail, bundleFilePath);
-        });
+        }
     }
 
     static printHelpMessage() {
@@ -139,17 +121,21 @@ export default class Streams {
         });
     }
 
-    static cssBundlerFileHandler(writeStream, filesQueue, filePath) {
-        let readStream = File.getReadStream(filePath);
-        readStream.pipe(through2((chunk, enc, callback) => {
-            writeStream.write(chunk);
-            callback();
-        }));
-        readStream.on('end', () => {
-            writeStream.write('\n');
-            filesQueue.removeTask.call(filesQueue, filePath);
-        });
-        readStream.on('error', writeStream.destroy);
+    static combineStreams(sources, initialWriteStream) {
+        let completedStreamsCount = 0;
+        return sources
+            .map(source => (typeof source === 'string') ? (File.getReadStream(source)) : (source))
+            .reduce((writeStream, currentReadStream) => {
+                currentReadStream
+                    .on('end', () => {
+                        completedStreamsCount++;
+                        if (completedStreamsCount === sources.length) {
+                            writeStream.end();
+                        }
+                    })
+                    .pipe(writeStream, { end: false });
+                return writeStream;
+            }, initialWriteStream);
     }
 }
 
