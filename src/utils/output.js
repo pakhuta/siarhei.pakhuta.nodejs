@@ -1,6 +1,12 @@
-export default function output(msgTpl, ...args) {
-    let message = getFormattedMessage(msgTpl, ...args);
-    process.stdout.write(`\n${message}`);
+export default class Output {
+    static write(msgTpl, ...args) {
+        let message = getFormattedMessage(msgTpl, ...args);
+        process.stdout.write(`\n${message}`);
+    }
+
+    static getStream() {
+        return process.stdout;
+    }
 }
 
 function getFormattedMessage(msgTpl, ...args) {

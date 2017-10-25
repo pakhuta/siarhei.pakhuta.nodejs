@@ -4,7 +4,7 @@ import through2 from 'through2';
 import split2 from 'split2';
 import request from 'request';
 import config from '../config';
-import output from './output';
+import Output from './output';
 import File from './file';
 import StreamUtils from './streamUtils';
 import * as services from '../services';
@@ -16,28 +16,21 @@ const externalCSS = 'https://www.epam.com/etc/clientlibs/foundation/main.min.fc6
 export default class Streams {
     static inputOutput(filePath) {
         File.getReadStream(filePath)
-            .pipe(through2((chunk, enc, callback) => {
-                output(chunk);
-                callback();
-            }));
+            .pipe(Output.getStream());
     }
 
     static transformFile(filePath, isSaveToFile) {
         let csvColumnsName;
-        let outputBuffer = {
-            maxLength: 1,
-            buffer: []
-        };
         let isFirstChunk = true;
         let isSupported = supportedFileFormats.some(fileFormat => File.checkExtname(filePath, fileFormat));
 
         if (!isSupported) {
-            output(config.messages.notSupportedFileFormats, supportedFileFormats.join(', '));
+            Output.write(config.messages.notSupportedFileFormats, supportedFileFormats.join(', '));
             return;
         }
 
         let readStream = File.getReadStream(filePath);
-        let writeStream = (isSaveToFile) ? (File.getWriteStream(File.getPathForSaveJSON(filePath))) : (process.stdout);
+        let writeStream = isSaveToFile ? File.getWriteStream(File.getPathForSaveJSON(filePath)) : Output.getStream();
 
         readStream
             .pipe(split2())
@@ -47,39 +40,31 @@ export default class Streams {
                     callback(null, '[');
                 } else {
                     try {
-                        callback(null, ImporterUtils.convertCSVRowToJSON(chunk.toString(), csvColumnsName));
+                        let jsonChunk = ImporterUtils.convertCSVRowToJSON(chunk.toString(), csvColumnsName);
+                        if (!isFirstChunk) {
+                            jsonChunk = `,${jsonChunk}`;
+                        }
+                        isFirstChunk = false;
+                        callback(null, jsonChunk);
                     } catch (err) {
                         callback(err);
                     }
                 }
-            }))
-            .pipe(through2(function bufferProcessing(chunk, enc, callback) {
-                outputBuffer.buffer.push(chunk);
-                if (outputBuffer.buffer.length > outputBuffer.maxLength) {
-                    this.push(outputBuffer.buffer.shift());
-                    if (!isFirstChunk) {
-                        this.push(',');
-                    }
-                    isFirstChunk = false;
-                }
+            }, function flush(callback) {
+                this.push(']');
                 callback();
             }))
             .pipe(writeStream);
-
-        readStream.on('end', () => {
-            writeStream.write(outputBuffer.buffer.join(','));
-            writeStream.write(']');
-        });
     }
 
     static transform() {
-        output(config.messages.typeDataToTransform);
+        Output.write(config.messages.typeDataToTransform);
 
         process.stdin
             .pipe(Streams.transformToUpperCase())
             .pipe(through2((chunk, enc, callback) => {
                 process.stdin.end();
-                output(chunk);
+                Output.write(chunk);
                 callback();
             }));
     }
@@ -96,19 +81,19 @@ export default class Streams {
             let sources = cssFilesList.concat(request.get(externalCSS));
             Streams.combineStreams(sources, writeStream)
                 .on('finish', () => {
-                    output(config.messages.cssBundleSuccess, bundleFilePath);
+                    Output.write(config.messages.cssBundleSuccess, bundleFilePath);
                 })
                 .on('error', () => {
-                    output(config.messages.cssBundleFail, bundleFilePath);
+                    Output.write(config.messages.cssBundleFail, bundleFilePath);
                 });
         } catch (err) {
-            output(config.messages.cssBundleFail, bundleFilePath);
+            Output.write(config.messages.cssBundleFail, bundleFilePath);
         }
     }
 
     static printHelpMessage() {
         File.getReadStream(path.join(path.dirname(module.filename), config.helpFile))
-            .pipe(process.stdout);
+            .pipe(Output.getStream());
     }
 
     static transformToUpperCase() {
@@ -146,7 +131,7 @@ const handlers = new Map([
     }],
     ['transform-file', {
         handler: Streams.transformFile,
-        requiredArgs: ['file', { save: false }]
+        requiredArgs: ['file', 'save']
     }],
     ['transform', {
         handler: Streams.transform,
@@ -172,7 +157,10 @@ function init() {
 
 function run() {
     const processArgs = parseArgs(process.argv, {
-        alias: config.argParams.alias
+        alias: config.argParams.alias,
+        default: {
+            save: false
+        }
     });
     let action;
     let handlerParams;
@@ -182,20 +170,20 @@ function run() {
     process.stdin.setEncoding('utf8');
 
     if (Object.keys(processArgs).length === 1) {
-        output(config.messages.argsNotDefined);
+        Streams.printHelpMessage();
         return;
     }
 
     action = StreamUtils.getAction(processArgs);
     handlerParams = handlers.get(action);
     if (!handlerParams) {
-        output(config.messages.wrongActionType, action);
+        Output.write(config.messages.wrongActionType, action);
         return;
     }
 
     missedParams = StreamUtils.checkRequiredParams(processArgs, handlerParams);
     if (missedParams.length) {
-        output(config.messages.requiredArgumentNotSpecified, missedParams.join(', '));
+        Output.write(config.messages.requiredArgumentNotSpecified, missedParams.join(', '));
         return;
     }
 

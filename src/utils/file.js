@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
-import output from './output';
+import Output from './output';
 import config from '../config';
 
 export default class File {
@@ -36,8 +36,8 @@ export default class File {
 
 function errorHandler(filePath, err) {
     if (err.code === 'ENOENT') {
-        output(config.messages.fileNotFound, filePath);
+        Output.write(config.messages.fileNotFound, filePath);
     } else {
-        output(err);
+        Output.write(err);
     }
 }
