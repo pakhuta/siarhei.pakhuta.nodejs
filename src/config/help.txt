@@ -1,0 +1,6 @@
+Existing options:
+-a, --action	Specifies an action type
+-f, --file	Specifies a file path
+-s, --save	Specifies is save output to a file
+-p, --path	Specifies path to folder (for CSS bundle)
+-h, --help	Shows help information

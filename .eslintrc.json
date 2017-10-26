@@ -40,6 +40,28 @@
     ],
     "import/extensions": [
       "off"
+    ],
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false
+      }
+    ],
+    "no-prototype-builtins": [
+      "off"
+    ],
+    "max-len": [
+      "error",
+      120
+    ],
+    "no-param-reassign": [
+      "off"
+    ],
+    "no-confusing-arrow": [
+      "off"
+    ],
+    "no-plusplus": [
+      "off"
     ]
   }
 }
