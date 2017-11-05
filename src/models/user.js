@@ -1,5 +1,6 @@
 export default class User {
-    constructor() {
-        console.log('User module');
+    constructor(params) {
+        this.id = params.id || process.hrtime().join('');
+        this.name = params.name || '';
     }
 }

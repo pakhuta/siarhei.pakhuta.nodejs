@@ -8,10 +8,4 @@ export default class ResponseUtils {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(msg));
     }
-
-    static handleError(res) {
-        res.on('error', err => {
-            ResponseUtils.sendErrorResponse({ res, err });
-        });
-    }
 }
