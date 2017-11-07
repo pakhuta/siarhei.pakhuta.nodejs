@@ -4,6 +4,7 @@ import getProduct from './products/getProduct';
 import getProductReviews from './products/getProductReviews';
 import postProducts from './products/postProducts';
 import getUsers from './users/getUsers';
+import postAuth from './auth/postAuth';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get('/api/products/:id', getProduct);
 router.get('/api/products/:id/reviews', getProductReviews);
 router.post('/api/products', postProducts);
 router.get('/api/users', getUsers);
-router.get('/auth', getUsers);
+router.post('/auth', postAuth);
 
 router.all('*', (req, res) => {
     res.status(404).send('404. Page not found');

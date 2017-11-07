@@ -1,18 +1,26 @@
 [
   {
     "id": "1",
-    "name": "Vasya"
+    "name": "vasya",
+    "password": "7815696ecbf1c96e6894b779456d330e",
+    "email": "vasya@gamil.com"
   },
   {
     "id": "2",
-    "name": "Petya"
+    "name": "petya",
+    "password": "7815696ecbf1c96e6894b779456d330e",
+    "email": "petya@gamil.com"
   },
   {
     "id": "3",
-    "name": "Ivan"
+    "name": "ivan",
+    "password": "7815696ecbf1c96e6894b779456d330e",
+    "email": "ivan@gamil.com"
   },
   {
     "id": "4",
-    "name": "Andrey"
+    "name": "andrey",
+    "password": "7815696ecbf1c96e6894b779456d330e",
+    "email": "andrey@gamil.com"
   }
 ]

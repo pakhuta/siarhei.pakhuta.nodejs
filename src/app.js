@@ -7,11 +7,16 @@ import cookiesParser from './middlewares/cookiesParser';
 import queryParser from './middlewares/queryParser';
 import ResponseUtils from './utils/responseUtils';
 import routes from './routes';
+import authVerification from './middlewares/authVerification';
 
 const app = express();
 
+process.env.SECRET_KEY = process.env.SECRET_KEY || 'secretKey';
+
+app.disable('x-powered-by');
 app.use(cookiesParser);
 app.use(queryParser);
+app.use(authVerification);
 app.use(express.json());
 app.use((err, req, res, next) => {
     ResponseUtils.sendErrorResponse({ res, err, msg: `Failed request processing: ${req.url}` });

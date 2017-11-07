@@ -5,7 +5,7 @@
   "scripts": {
     "eslint": "eslint src/**/*.js --cache",
     "build": "babel src -d dist --source-maps --copy-files --quiet",
-    "app": "npm run build && node dist/app.js",
+    "app": "npm run build && node dist/index.js",
     "start": "nodemon --exec npm run app --quiet --silent",
     "test": "echo \"Will be implemented in future\" && exit 0"
   },
