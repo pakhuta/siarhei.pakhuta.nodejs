@@ -1,9 +1,9 @@
 import express from 'express';
-import getProducts from './getProducts';
-import getProduct from './getProduct';
-import getProductReviews from './getProductReviews';
-import postProducts from './postProducts';
-import getUsers from './getUsers';
+import getProducts from './products/getProducts';
+import getProduct from './products/getProduct';
+import getProductReviews from './products/getProductReviews';
+import postProducts from './products/postProducts';
+import getUsers from './users/getUsers';
 
 const router = express.Router();
 
@@ -16,6 +16,7 @@ router.get('/api/products/:id', getProduct);
 router.get('/api/products/:id/reviews', getProductReviews);
 router.post('/api/products', postProducts);
 router.get('/api/users', getUsers);
+router.get('/auth', getUsers);
 
 router.all('*', (req, res) => {
     res.status(404).send('404. Page not found');
