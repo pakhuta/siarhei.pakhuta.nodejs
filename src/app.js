@@ -1,5 +1,6 @@
 import util from 'util';
 import express from 'express';
+import passport from 'passport';
 import * as models from './models';
 import * as services from './services';
 import config from './config';
@@ -8,6 +9,7 @@ import queryParser from './middlewares/queryParser';
 import ResponseUtils from './utils/responseUtils';
 import routes from './routes';
 import authVerification from './middlewares/authVerification';
+import PassportLocalStrategy from './routes/auth/passport/localStrategy';
 
 const app = express();
 
@@ -17,12 +19,14 @@ app.disable('x-powered-by');
 app.use(cookiesParser);
 app.use(queryParser);
 app.use(authVerification);
+app.use(passport.initialize());
 app.use(express.json());
 app.use((err, req, res, next) => {
     ResponseUtils.sendErrorResponse({ res, err, msg: `Failed request processing: ${req.url}` });
     next(err);
 });
 app.use('/', routes);
+PassportLocalStrategy.use();
 
 init();
 

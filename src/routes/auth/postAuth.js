@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken';
-import Storage from '../../services/storage';
+import AuthUtils from '../../services/authUtils';
 import Output from '../../utils/output';
 
 export default function postAuth(req, res) {
-    const users = Storage.get('users');
     const requestedUser = req.body.user;
 
     if (!requestedUser || !(requestedUser instanceof Object)) {
@@ -12,36 +11,27 @@ export default function postAuth(req, res) {
         return;
     }
 
-    const userData = users.find(userItem => userItem.name === requestedUser.login);
+    const user = AuthUtils.getUserByCredentials(requestedUser.login, requestedUser.password);
 
-    if (userData) {
-        if (userData.password === requestedUser.password) {
-            res.status(200).send({
-                code: 200,
-                message: 'OK',
-                data: {
-                    user: {
-                        email: userData.email,
-                        username: userData.name
-                    }
-                },
-                token: jwt.sign({ username: userData.name }, process.env.SECRET_KEY)
-            });
-            Output.write(`User: "${requestedUser.login}" has authenticated`);
-        } else {
-            res.status(401).send({
-                code: 401,
-                message: 'Unauthorized',
-                data: {}
-            });
-            Output.write(`Invalid credentials for user: "${requestedUser.login}"`);
-        }
+    if (user) {
+        res.status(200).send({
+            code: 200,
+            message: 'OK',
+            data: {
+                user: {
+                    email: user.email,
+                    username: user.name
+                }
+            },
+            token: jwt.sign({ username: user.name }, process.env.SECRET_KEY)
+        });
+        Output.write(`User: "${requestedUser.login}" has authenticated`);
     } else {
-        res.status(404).send({
-            code: 404,
-            message: 'Not Found',
+        res.status(401).send({
+            code: 401,
+            message: 'Unauthorized',
             data: {}
         });
-        Output.write(`Requested not existed user: "${requestedUser.login}"`);
+        Output.write(`Invalid credentials for user: "${requestedUser.login}"`);
     }
 }
