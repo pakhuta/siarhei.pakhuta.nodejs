@@ -28,23 +28,24 @@ class StorageInstance {
 
     add(source, data) {
         let insertedData = [];
+        let isDataArray = Array.isArray(data);
 
         try {
             if (!this[source.name]) {
                 this[source.name] = [];
             }
 
-            if (!Array.isArray(data)) {
-                insertedData = [data];
+            if (!isDataArray) {
+                data = [data];
             }
 
-            insertedData = insertedData.map(dataItem => (source.Model) ? (new source.Model(dataItem)) : (dataItem));
+            insertedData = data.map(dataItem => (source.Model) ? (new source.Model(dataItem)) : (dataItem));
             this[source.name] = this[source.name].concat(insertedData);
         } catch (err) {
             Output.write(err);
         }
 
-        return (Array.isArray(data)) ? (insertedData) : (insertedData[0]);
+        return (isDataArray) ? (insertedData) : (insertedData[0]);
     }
 
     static getSourceParams(sourceName) {

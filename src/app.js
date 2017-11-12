@@ -30,11 +30,11 @@ app.use(authVerification);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
+app.use('/', routes);
 app.use((err, req, res, next) => {
     ResponseUtils.sendErrorResponse({ res, err, msg: `Failed request processing: ${req.url}` });
     next(err);
 });
-app.use('/', routes);
 Strategy.PassportLocalStrategy.use();
 Strategy.BearerLocalStrategy.use();
 Strategy.PassportFacebookStrategy.use();
