@@ -1,6 +1,7 @@
 import util from 'util';
 import express from 'express';
 import passport from 'passport';
+import session from 'express-session';
 import * as models from './models';
 import * as services from './services';
 import config from './config';
@@ -9,24 +10,48 @@ import queryParser from './middlewares/queryParser';
 import ResponseUtils from './utils/responseUtils';
 import routes from './routes';
 import authVerification from './middlewares/authVerification';
-import PassportLocalStrategy from './routes/auth/passport/localStrategy';
+import * as Strategy from './routes/auth/passport';
 
 const app = express();
 
 process.env.SECRET_KEY = process.env.SECRET_KEY || 'secretKey';
+process.env.PORT = 3000;
 
 app.disable('x-powered-by');
+app.use(session({
+    secret: 'nodejsmp',
+    saveUninitialized: true,
+    resave: true,
+}));
+
 app.use(cookiesParser);
 app.use(queryParser);
 app.use(authVerification);
 app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.json());
 app.use((err, req, res, next) => {
     ResponseUtils.sendErrorResponse({ res, err, msg: `Failed request processing: ${req.url}` });
     next(err);
 });
 app.use('/', routes);
-PassportLocalStrategy.use();
+Strategy.PassportLocalStrategy.use();
+Strategy.BearerLocalStrategy.use();
+Strategy.PassportFacebookStrategy.use();
+Strategy.PassportTwitterStrategy.use();
+Strategy.PassportGoogleStrategy.use();
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+    if (user) {
+        done(null, user);
+    } else {
+        done(new Error('User not found'), user);
+    }
+});
 
 init();
 

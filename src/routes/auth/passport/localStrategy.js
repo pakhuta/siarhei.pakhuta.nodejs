@@ -1,6 +1,8 @@
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
 import LocalStrategy from 'passport-local';
 import AuthUtils from '../../../services/authUtils';
+import Storage from '../../../services/storage';
 
 export default class PassportLocalStrategy {
     static use() {
@@ -17,7 +19,9 @@ export default class PassportLocalStrategy {
                 return done(null, false);
             }
 
-            PassportToken
+            let token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY);
+            Storage.add('token', token);
+            user.token = token;
 
             return done(null, user);
         }));

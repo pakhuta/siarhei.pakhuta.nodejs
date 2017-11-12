@@ -68,6 +68,9 @@
       {
         "allow": ["err"]
       }
+    ],
+    "consistent-return": [
+      "off"
     ]
   }
 }

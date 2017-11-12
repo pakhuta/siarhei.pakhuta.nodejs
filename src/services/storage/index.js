@@ -6,19 +6,22 @@ import Product from '../../models/product';
 import User from '../../models/user';
 
 const sources = [
-    { name: 'products', Model: Product },
-    { name: 'users', Model: User }
+    { name: 'products', Model: Product, hasFile: true },
+    { name: 'users', Model: User, hasFile: true },
+    { name: 'token', Model: null, hasFile: false }
 ];
 let storageInstance;
 
 class StorageInstance {
     constructor() {
         sources.forEach(source => {
-            try {
-                let data = fs.readFileSync(path.join(__dirname, '../..', config.dataPath, `${source.name}.json`));
-                this.add(source, JSON.parse(data.toString()));
-            } catch (err) {
-                Output.write(err);
+            if (source.hasFile) {
+                try {
+                    let data = fs.readFileSync(path.join(__dirname, '../..', config.dataPath, `${source.name}.json`));
+                    this.add(source, JSON.parse(data.toString()));
+                } catch (err) {
+                    Output.write(err);
+                }
             }
         });
     }
@@ -27,15 +30,21 @@ class StorageInstance {
         let insertedData = [];
 
         try {
-            if (Array.isArray(data) && data.length) {
-                insertedData = data.map(dataItem => new source.Model(dataItem));
-                this[source.name] = insertedData;
+            if (!this[source.name]) {
+                this[source.name] = [];
             }
+
+            if (!Array.isArray(data)) {
+                insertedData = [data];
+            }
+
+            insertedData = insertedData.map(dataItem => (source.Model) ? (new source.Model(dataItem)) : (dataItem));
+            this[source.name] = this[source.name].concat(insertedData);
         } catch (err) {
             Output.write(err);
         }
 
-        return insertedData;
+        return (Array.isArray(data)) ? (insertedData) : (insertedData[0]);
     }
 
     static getSourceParams(sourceName) {
@@ -52,8 +61,10 @@ export default class Storage {
         let data = storageInstance[sourceName];
 
         filters.forEach(filter => {
-            if (Array.isArray(data)) {
-                data = data.find(dataItem => dataItem[filter.name] === filter.value);
+            if (filter.name) {
+                data = data.filter(dataItem => dataItem[filter.name] === filter.value);
+            } else {
+                data = data.filter(dataItem => dataItem === filter.value);
             }
         });
 
