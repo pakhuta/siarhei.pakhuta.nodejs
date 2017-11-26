@@ -24,6 +24,7 @@
   "homepage": "https://github.com/pakhuta/siarhei.pakhuta.nodejs#readme",
   "dependencies": {
     "eventemitter3": "2.0.3",
+    "express": "4.16.2",
     "glob": "7.1.2",
     "minimist": "1.2.0",
     "request": "2.83.0",

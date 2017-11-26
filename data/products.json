@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "name": "product 1",
+    "reviews": [
+      "review 1",
+      "review 2"
+    ]
+  },
+  {
+    "id": "2",
+    "name": "product 2",
+    "reviews": [
+      "review 3",
+      "review 4",
+      "review 5"
+    ]
+  },
+  {
+    "id": "3",
+    "name": "product 3"
+  }
+]

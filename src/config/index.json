@@ -19,5 +19,9 @@
     "notSupportedFileFormats": "Supported only \"$0\" file formats",
     "cssBundleSuccess": "CSS bundle \"$0\" has been successfully created",
     "cssBundleFail": "Creating a CSS bundle \"$0\" has been failed"
-  }
+  },
+  "server": {
+    "port": 3000
+  },
+  "placeholderPattern": "{message}"
 }

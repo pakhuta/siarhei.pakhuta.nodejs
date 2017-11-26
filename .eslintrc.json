@@ -62,6 +62,12 @@
     ],
     "no-plusplus": [
       "off"
+    ],
+    "no-shadow": [
+      "error",
+      {
+        "allow": ["err"]
+      }
     ]
   }
 }
