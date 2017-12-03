@@ -6,54 +6,42 @@ import Product from '../../models/product';
 import User from '../../models/user';
 
 const sources = [
-    { name: 'products', Model: Product },
-    { name: 'users', Model: User }
+    { name: 'products', Model: Product, hasFile: true },
+    { name: 'users', Model: User, hasFile: true },
+    { name: 'token', Model: null, hasFile: false }
 ];
-let storageInstance;
+let volumes;
 
-class StorageInstance {
-    constructor() {
+export default class Storage {
+    static init() {
+        if (volumes) {
+            return;
+        }
+
+        volumes = {};
+
         sources.forEach(source => {
-            try {
-                let data = fs.readFileSync(path.join(__dirname, '../..', config.dataPath, `${source.name}.json`));
-                this.add(source, JSON.parse(data.toString()));
-            } catch (err) {
-                Output.write(err);
+            if (source.hasFile) {
+                try {
+                    let data = fs.readFileSync(path.join(__dirname, '../..', config.dataPath, `${source.name}.json`));
+                    Storage.add(source.name, JSON.parse(data.toString()));
+                } catch (err) {
+                    Output.write(err);
+                }
             }
         });
     }
 
-    add(source, data) {
-        let insertedData = [];
-
-        try {
-            if (Array.isArray(data) && data.length) {
-                insertedData = data.map(dataItem => new source.Model(dataItem));
-                this[source.name] = insertedData;
-            }
-        } catch (err) {
-            Output.write(err);
-        }
-
-        return insertedData;
-    }
-
-    static getSourceParams(sourceName) {
-        return sources.find(source => source.name === sourceName);
-    }
-}
-
-export default class Storage {
     static get(sourceName, filters = []) {
-        if (!storageInstance) {
-            storageInstance = new StorageInstance();
-        }
+        Storage.init();
 
-        let data = storageInstance[sourceName];
+        let data = volumes[sourceName];
 
         filters.forEach(filter => {
-            if (Array.isArray(data)) {
-                data = data.find(dataItem => dataItem[filter.name] === filter.value);
+            if (filter.name) {
+                data = data.filter(dataItem => dataItem[filter.name] === filter.value);
+            } else {
+                data = data.filter(dataItem => dataItem === filter.value);
             }
         });
 
@@ -61,10 +49,31 @@ export default class Storage {
     }
 
     static add(sourceName, data) {
-        if (!storageInstance) {
-            storageInstance = new StorageInstance();
+        Storage.init();
+
+        let source = Storage.getSourceParams(sourceName);
+        let insertedData = [];
+        let isDataArray = Array.isArray(data);
+
+        try {
+            if (!volumes[source.name]) {
+                volumes[source.name] = [];
+            }
+
+            if (!isDataArray) {
+                data = [data];
+            }
+
+            insertedData = data.map(dataItem => (source.Model) ? (new source.Model(dataItem)) : (dataItem));
+            volumes[source.name] = volumes[source.name].concat(insertedData);
+        } catch (err) {
+            Output.write(err);
         }
 
-        return storageInstance.add(StorageInstance.getSourceParams(sourceName), data);
+        return (isDataArray) ? (insertedData) : (insertedData[0]);
+    }
+
+    static getSourceParams(sourceName) {
+        return sources.find(source => source.name === sourceName);
     }
 }
