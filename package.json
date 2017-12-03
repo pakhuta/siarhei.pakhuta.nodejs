@@ -7,7 +7,10 @@
     "build": "babel src -d dist --source-maps --copy-files --quiet",
     "app": "npm run build && node dist/index.js",
     "start": "nodemon --exec npm run app --quiet --silent",
-    "test": "echo \"Will be implemented in future\" && exit 0"
+    "prepostgres": "docker pull postgres:10.1-alpine",
+    "postgres": "docker run -d --publish 5432:5432 --name postgres --rm postgres:10.1-alpine",
+    "postgres:stop": "docker stop postgres",
+    "migrate": "sequelize db:migrate && node dist/jsonToPostgres.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +41,7 @@
     "pg": "6.4.2",
     "request": "2.83.0",
     "sequelize": "4.23.0",
+    "sequelize-cli": "3.2.0",
     "split2": "2.2.0",
     "through2": "2.0.3"
   },

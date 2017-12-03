@@ -10,16 +10,14 @@ export default class BearerLocalStrategy {
                 return done(null, false);
             }
 
-            let validToken = AuthUtils.findToken(token);
-
-            if (validToken) {
-                jwt.verify(validToken, process.env.SECRET_KEY, (err, decoded) => {
+            if (AuthUtils.isTokenValid(token)) {
+                jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
                     if (err) {
                         return done(err);
                     }
 
                     let { userId } = decoded;
-                    let user = AuthUtils.getUserById(userId);
+                    let [user] = await AuthUtils.getUserById(userId);
 
                     done(null, user);
                 });

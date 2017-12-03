@@ -1,17 +1,21 @@
 import Storage from '../storage';
 
+let tokens = new Set();
+
 export default class AuthUtils {
     static getUserByCredentials(login, password) {
-        const users = Storage.get('users');
-        return users.find(userItem => (userItem.name === login && userItem.password === password));
+        return Storage.get('users', [{ name: 'name', value: login }, { name: 'password', value: password }]);
     }
 
     static getUserById(userId) {
-        const users = Storage.get('users');
-        return users.find(userItem => (userItem.id === userId));
+        return Storage.get('users', [{ name: 'id', value: userId }]);
     }
 
-    static findToken(token) {
-        return Storage.get('token', [{ value: token }])[0];
+    static addToken(token) {
+        tokens.add(token);
+    }
+
+    static isTokenValid(token) {
+        return tokens.has(token);
     }
 }

@@ -1,5 +1,5 @@
 import Storage from '../../services/storage';
 
-export default function getProducts(req, res) {
-    res.send(Storage.get('products'));
+export default async function getProducts(req, res) {
+    res.send(await Storage.get('products'));
 }

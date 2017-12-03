@@ -6,6 +6,7 @@ import getProductReviews from './products/getProductReviews';
 import postProducts from './products/postProducts';
 import getUsers from './users/getUsers';
 import postAuth from './auth/postAuth';
+import authVerification from '../middlewares/authVerification';
 
 const router = express.Router();
 
@@ -13,11 +14,11 @@ router.get('/', (req, res) => {
     res.send({ parsedQuery: req.parsedQuery, parsedCookies: req.parsedCookies });
 });
 
-router.get('/api/products', getProducts);
-router.get('/api/products/:id', getProduct);
-router.get('/api/products/:id/reviews', getProductReviews);
-router.post('/api/products', postProducts);
-router.get('/api/users', getUsers);
+router.get('/api/products', authVerification, getProducts);
+router.get('/api/products/:id', authVerification, getProduct);
+router.get('/api/products/:id/reviews', authVerification, getProductReviews);
+router.post('/api/products', authVerification, postProducts);
+router.get('/api/users', authVerification, getUsers);
 router.post('/auth', postAuth);
 
 router.post(

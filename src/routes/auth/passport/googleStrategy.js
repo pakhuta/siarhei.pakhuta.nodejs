@@ -11,10 +11,10 @@ export default class PassportGoogleStrategy {
             callbackURL: `http://localhost:${process.env.PORT}/auth-google/callback`
         };
 
-        passport.use(new GoogleStrategy.Strategy(params, (accessToken, refreshToken, profile, cb) => {
-            let user = AuthUtils.getUserById(profile.id);
+        passport.use(new GoogleStrategy.Strategy(params, async (accessToken, refreshToken, profile, cb) => {
+            let [user] = await AuthUtils.getUserById(profile.id);
             if (!user) {
-                user = Storage.add('users', {
+                user = await Storage.add('users', {
                     id: profile.id,
                     name: profile.displayName
                 });

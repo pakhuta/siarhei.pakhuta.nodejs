@@ -2,16 +2,16 @@ import jwt from 'jsonwebtoken';
 import AuthUtils from '../../services/authUtils';
 import Output from '../../utils/output';
 
-export default function postAuth(req, res) {
+export default async function postAuth(req, res) {
     const requestedUser = req.body.user;
 
-    if (!requestedUser || !(requestedUser instanceof Object)) {
+    if (!(requestedUser instanceof Object)) {
         res.status(400).send('Bad Request');
         Output.write('Received an authentication request with wrong user data');
         return;
     }
 
-    const user = AuthUtils.getUserByCredentials(requestedUser.login, requestedUser.password);
+    const [user] = await AuthUtils.getUserByCredentials(requestedUser.login, requestedUser.password);
 
     if (user) {
         res.status(200).send({

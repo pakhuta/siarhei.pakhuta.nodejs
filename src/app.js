@@ -2,66 +2,20 @@ import util from 'util';
 import express from 'express';
 import passport from 'passport';
 import session from 'express-session';
-import Sequelize from 'sequelize';
-import * as models from './models';
 import * as services from './services';
 import config from './config';
 import cookiesParser from './middlewares/cookiesParser';
 import queryParser from './middlewares/queryParser';
 import ResponseUtils from './utils/responseUtils';
 import routes from './routes';
-import authVerification from './middlewares/authVerification';
-import * as Strategy from './routes/auth/passport';
+import initPassport from './routes/auth/passport';
+import Storage from './services/storage';
+import Output from './utils/output';
 
 const app = express();
-const sequelize = new Sequelize('postgres', 'postgres', '123456', {
-    host: 'localhost',
-    port: '5432',
-    dialect: 'postgres',
-
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-    operatorsAliases: false
-});
-
-let Users;
-
-sequelize.authenticate()
-    .then(() => {
-        console.log('DB success');
-        Users = sequelize.define('users', {
-            id: {
-                type: Sequelize.STRING,
-                allowNull: false,
-                unique: true,
-                primaryKey: true
-            },
-            name: Sequelize.STRING,
-            password: Sequelize.STRING,
-            email: Sequelize.STRING
-        });
-
-        return Users.sync();
-    })
-    .then(() => Users.create({
-        id: '1',
-        name: 'asd',
-        password: '1234',
-        email: 'asd@ddd.com'
-    }))
-    .then(() => Users.findOne({ where: { name: 'asd' } }))
-    .then((user) => {
-        console.log('##############');
-        console.dir(user);
-    })
-    .catch((err) => console.dir(err));
 
 process.env.SECRET_KEY = process.env.SECRET_KEY || 'secretKey';
-process.env.PORT = 3000;
+process.env.PORT = process.env.PORT || 3000;
 
 app.disable('x-powered-by');
 app.use(session({
@@ -72,7 +26,6 @@ app.use(session({
 
 app.use(cookiesParser);
 app.use(queryParser);
-app.use(authVerification);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
@@ -81,34 +34,16 @@ app.use((err, req, res, next) => {
     ResponseUtils.sendErrorResponse({ res, err, msg: `Failed request processing: ${req.url}` });
     next(err);
 });
-Strategy.PassportLocalStrategy.use();
-Strategy.BearerLocalStrategy.use();
-Strategy.PassportFacebookStrategy.use();
-Strategy.PassportTwitterStrategy.use();
-Strategy.PassportGoogleStrategy.use();
 
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-    if (user) {
-        done(null, user);
-    } else {
-        done(new Error('User not found'), user);
-    }
-});
-
+initPassport();
 init();
 
-console.log(`Application: "${config.name}" has been started`);
-
-let user1 = new models.User({});
-let product1 = new models.Product({});
+// let user1 = new models.User({});
+// let product1 = new models.Product({});
 let dirWatcher = new services.DirWatcher();
 let importer = services.Importer;
 
-console.log(user1, product1);
+// console.log(user1, product1);
 
 dirWatcher.on('dirwatcher:changed', async path => {
     try {
@@ -132,10 +67,18 @@ dirWatcher.watch(`${__dirname}/${config.dataPath}`, 3000);
 // use "streams.js" as module
 // utils.Streams.printHelpMessage();
 
-function init() {
+async function init() {
     process.on('uncaughtException', err => {
         console.error(util.format('Application got uncaught exception: %O', err));
     });
+
+    try {
+        await Storage.init();
+        console.log(`Application: "${config.name}" has been started`);
+    } catch (err) {
+        Output.write(err);
+        process.exit(1);
+    }
 }
 
 export default app;
