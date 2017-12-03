@@ -1,6 +1,7 @@
 import util from 'util';
 import express from 'express';
 import passport from 'passport';
+import Sequelize from 'sequelize';
 import * as models from './models';
 import * as services from './services';
 import config from './config';
@@ -12,6 +13,51 @@ import authVerification from './middlewares/authVerification';
 import PassportLocalStrategy from './routes/auth/passport/localStrategy';
 
 const app = express();
+const sequelize = new Sequelize('postgres', 'postgres', '123456', {
+    host: 'localhost',
+    port: '5432',
+    dialect: 'postgres',
+
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    },
+    operatorsAliases: false
+});
+
+let Users;
+
+sequelize.authenticate()
+    .then(() => {
+        console.log('DB success');
+        Users = sequelize.define('users', {
+            id: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                unique: true,
+                primaryKey: true
+            },
+            name: Sequelize.STRING,
+            password: Sequelize.STRING,
+            email: Sequelize.STRING
+        });
+
+        return Users.sync();
+    })
+    .then(() => Users.create({
+        id: '1',
+        name: 'asd',
+        password: '1234',
+        email: 'asd@ddd.com'
+    }))
+    .then(() => Users.findOne({ where: { name: 'asd' } }))
+    .then((user) => {
+        console.log('##############');
+        console.dir(user);
+    })
+    .catch((err) => console.dir(err));
 
 process.env.SECRET_KEY = process.env.SECRET_KEY || 'secretKey';
 
