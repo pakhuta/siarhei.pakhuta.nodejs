@@ -25,6 +25,8 @@ function requestHandler(req, res) {
     let { message = 'Hello World' } = reqUrl.query || {};
     let placeholderRegexp = new RegExp(config.placeholderPattern);
 
+    res.setHeader('Content-Type', 'text/html');
+
     File.getReadStream(path.join(__dirname, '..', config.dataPath, 'index.html'))
         .on('error', err => {
             ResponseUtils.sendErrorResponse({ res, msg: 'File "index.html" has not been found.', err });
