@@ -2,6 +2,7 @@ import util from 'util';
 import express from 'express';
 import passport from 'passport';
 import session from 'express-session';
+import mongoose from 'mongoose';
 import * as services from './services';
 import config from './config';
 import cookiesParser from './middlewares/cookiesParser';
@@ -9,8 +10,8 @@ import queryParser from './middlewares/queryParser';
 import ResponseUtils from './utils/responseUtils';
 import routes from './routes';
 import initPassport from './routes/auth/passport';
-import Storage from './services/storage';
 import Output from './utils/output';
+import * as Mongodb from './services/mongoDB';
 
 const app = express();
 
@@ -68,17 +69,35 @@ dirWatcher.watch(`${__dirname}/${config.dataPath}`, 3000);
 // utils.Streams.printHelpMessage();
 
 async function init() {
-    process.on('uncaughtException', err => {
-        console.error(util.format('Application got uncaught exception: %O', err));
-    });
+    addEventListeners();
 
     try {
-        await Storage.init();
+        // await Storage.init();
+        let mongodbNative = new Mongodb.MongodbNative();
+        Mongodb.Mongoose.connect();
+
+        await mongodbNative.fill();
+        Mongodb.Mongoose.fillDB();
         console.log(`Application: "${config.name}" has been started`);
     } catch (err) {
         Output.write(err);
         process.exit(1);
     }
+}
+
+function addEventListeners() {
+    process.on('SIGINT', () => {
+        let mongodbNative = new Mongodb.MongodbNative();
+        mongodbNative.close();
+        mongoose.connection.close(() => {
+            Output.write('Disconnected from databases');
+            process.exit(0);
+        });
+    });
+
+    process.on('uncaughtException', err => {
+        console.error(util.format('Application got uncaught exception: %O', err));
+    });
 }
 
 export default app;

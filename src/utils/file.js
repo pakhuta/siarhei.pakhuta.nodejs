@@ -32,6 +32,19 @@ export default class File {
             glob(pattern, (err, fileList) => (err) ? (reject(err)) : (resolve(fileList)));
         });
     }
+
+    static readJSON(source) {
+        let data = [];
+
+        try {
+            data = fs.readFileSync(source);
+            return JSON.parse(data.toString());
+        } catch (err) {
+            Output.write(err);
+        }
+
+        return data;
+    }
 }
 
 function errorHandler(filePath, err) {

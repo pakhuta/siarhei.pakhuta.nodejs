@@ -13,7 +13,7 @@
     "migrate": "sequelize db:migrate && node dist/jsonToPostgres.js",
     "premongodb": "docker pull mongo:3.5.13-jessie",
     "mongodb": "docker run -d --publish 27017:27017 --name mongo --rm mongo:3.5.13-jessie",
-    "mongo:stop": "docker stop mongo"
+    "mongodb:stop": "docker stop mongo"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,8 @@
     "glob": "7.1.2",
     "jsonwebtoken": "8.1.0",
     "minimist": "1.2.0",
+    "mongodb": "2.2.14",
+    "mongoose": "4.13.6",
     "passport": "0.4.0",
     "passport-facebook": "2.1.1",
     "passport-google-oauth20": "1.0.0",

@@ -1,5 +1,5 @@
-import Storage from '../../services/storage';
+import Mongoose from '../../services/mongoDB/mongoose';
 
 export default async function getProducts(req, res) {
-    res.send(await Storage.get('products'));
+    res.send(await Mongoose.get('products'));
 }
