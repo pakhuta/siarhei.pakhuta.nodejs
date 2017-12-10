@@ -10,7 +10,10 @@
     "prepostgres": "docker pull postgres:10.1-alpine",
     "postgres": "docker run -d --publish 5432:5432 --name postgres --rm postgres:10.1-alpine",
     "postgres:stop": "docker stop postgres",
-    "migrate": "sequelize db:migrate && node dist/jsonToPostgres.js"
+    "migrate": "sequelize db:migrate && node dist/jsonToPostgres.js",
+    "premongodb": "docker pull mongo:3.5.13-jessie",
+    "mongodb": "docker run -d --publish 27017:27017 --name mongo --rm mongo:3.5.13-jessie",
+    "mongo:stop": "docker stop mongo"
   },
   "repository": {
     "type": "git",
