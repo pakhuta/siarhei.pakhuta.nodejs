@@ -1,0 +1,529 @@
+swagger: '2.0'
+info:
+  description: |
+    Swagger. Docs
+  version: 1.0.0
+  title: NodeJS MP. Homework 8
+  contact:
+    url: https://github.com/pakhuta/siarhei.pakhuta.nodejs
+host: localhost:3000
+basePath: /
+schemes:
+  - http
+tags:
+- name: products
+  description: Operations about products
+- name: users
+  description: Operations about users
+- name: cities
+  description: Operations about cities
+- name: auth
+  description: Operations about auth
+paths:
+  /api/products:
+    get:
+      tags: 
+      - products
+      summary: Get all products
+      operationId: getAllProducts
+      parameters:
+      - $ref: '#/parameters/jwt'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+      security:
+      - jwt: []
+    post:
+      tags: 
+      - products
+      summary: Add a new product
+      operationId: addProduct
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: body
+        in: body
+        description: Product object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+              $ref: '#/definitions/Product'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+      security:
+      - jwt: []
+  /api/products/{id}:
+    get:
+      tags: 
+      - products
+      summary: Get product by ID
+      operationId: getProductById
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: id
+        in: path
+        description: ID of product to return
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+      security:
+      - jwt: []
+    delete:
+      tags: 
+      - products
+      summary: Delete product by ID
+      operationId: deleteProductById
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: id
+        in: path
+        description: ID of product to delete
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: string
+            example: 'OK'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+        500:
+          description: unsuccessful operation
+          schema:
+            type: string
+            example: 'Product hasn''t been deleted'
+      security:
+      - jwt: []
+  /api/products/{id}/reviews:
+    get:
+      tags: 
+      - products
+      summary: Get reviews of product by ID
+      operationId: getReviewsOfProductById
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: id
+        in: path
+        description: ID of product to return reviews
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Reviews'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+      security:
+      - jwt: []
+  /api/users:
+    get:
+      tags: 
+      - users
+      summary: Get all users
+      operationId: getAllUsers
+      parameters:
+      - $ref: '#/parameters/jwt'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+      security:
+      - jwt: []
+  /api/users/{id}:
+    delete:
+      tags: 
+      - users
+      summary: Delete user by ID
+      operationId: deleteuserById
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: id
+        in: path
+        description: ID of user to delete
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: string
+            example: 'OK'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+        500:
+          description: unsuccessful operation
+          schema:
+            type: string
+            example: 'User hasn''t been deleted'
+      security:
+      - jwt: []
+  /api/cities:
+    get:
+      tags: 
+      - cities
+      summary: Get all cities
+      operationId: getAllCities
+      parameters:
+      - $ref: '#/parameters/jwt'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/City'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+      security:
+      - jwt: []
+    post:
+      tags: 
+      - cities
+      summary: Add a new city
+      operationId: addCity
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: body
+        in: body
+        description: City object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/City'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+              $ref: '#/definitions/City'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+        500:
+          description: unsuccessful operation
+          schema:
+            type: string
+            example: 'City hasn''t been added.'
+      security:
+      - jwt: []
+  /api/cities/{id}:
+    put:
+      tags: 
+      - cities
+      summary: Update city by ID
+      operationId: updateCityById
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: id
+        in: path
+        description: ID of city to update
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: City object that needs to be updated in the store
+        required: true
+        schema:
+          $ref: '#/definitions/City'
+      consumes:
+      - application/json
+      produces:
+      - text/plain
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: string
+            example: 'OK'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+        500:
+          description: unsuccessful operation
+          schema:
+            type: string
+            example: 'City hasn''t been updated.'
+      security:
+      - jwt: []
+    delete:
+      tags: 
+      - cities
+      summary: Delete city by ID
+      operationId: deleteCityById
+      parameters:
+      - $ref: '#/parameters/jwt'
+      - name: id
+        in: path
+        description: ID of city to delete
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: string
+            example: 'OK'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+        500:
+          description: unsuccessful operation
+          schema:
+            type: string
+            example: 'City hasn''t been deleted'
+      security:
+      - jwt: []
+  /cityNative:
+    get:
+      tags: 
+      - cities
+      summary: Get random city via native MongoDB driver
+      operationId: getRandomCityMongoDB
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/City'
+  /city:
+    get:
+      tags: 
+      - cities
+      summary: Get random city via Mongoose
+      operationId: getRandomCityMongoose
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/City'
+  /auth:
+    post:
+      tags: 
+        - auth
+      summary: Authorize user by credentials
+      operationId: authorizeUserByCredentials 
+      parameters:
+        - in: body
+          name: user
+          description: User credentials
+          required: true
+          schema:
+            type: object
+            properties:
+             user:
+                type: object
+                properties:
+                  login:
+                    type: string
+                    example: 'ivan'
+                  password:
+                    type: string
+                    example: '7815696ecbf1c96e6894b779456d330e'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      - text/plain
+      responses:
+        200:
+         $ref: '#/responses/jwtAuthorized'
+        400:
+          description: Invalid request data
+          schema:
+            type: string
+            example: 'Bad Request'
+        401:
+          $ref: '#/responses/jwtUnauthorized'
+  /auth-twitter:
+    get:
+      tags: 
+        - auth
+      summary: Authorize user via twitter
+      operationId: authorizeUserViaTwitter 
+      produces:
+      - text/plain
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: string
+            example: 'Resource is reached by twitter authentication. User name: {userName}'
+  /auth-google:
+    get:
+      tags: 
+        - auth
+      summary: Authorize user via google
+      operationId: authorizeUserViaGoogle
+      produces:
+      - text/plain
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: string
+            example: 'Resource is reached by google authentication. User name: {userName}'
+securityDefinitions:
+  jwt:
+    type: apiKey
+    name: api_key
+    in: header
+definitions:
+  Product:
+    type: object
+    properties:
+      id:
+        type: string
+        example: '1'
+      name:
+        type: string
+        example: 'Product 1'
+      reviews:
+        $ref: '#/definitions/Reviews'
+  Reviews:
+    type: array
+    items:
+      type: string
+      example: ['review1', 'review2', 'review3']
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+        example: '1'
+      name:
+        type: string
+        example: 'vasya'
+      password:
+        type: string
+        example: '7815696ecbf1c96e6894b779456d330e'
+      email:
+        type: string
+        example: 'vasya@gamil.com'
+  City:
+    type: object
+    properties:
+      id:
+        type: string
+        example: '1'
+      name:
+        type: string
+        example: 'Brest'
+      country:
+        type: string
+        example: 'Belarus'
+      lastModifiedDate:
+        type: string
+        format: date-time
+        example: '2017-12-12T08:09:04.288Z'
+      location:
+        type: object
+        properties:
+          lat:
+            type: number
+            format: float
+            example: 52.097621
+          long:
+            type: number
+            format: float
+            example: 23.73405
+parameters:
+  jwt:
+    name: token
+    description: jsonwebtoken
+    in: header
+    required: true
+    type: string
+responses:
+  jwtAuthorized:
+    description: Successful authenticate
+    schema:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: 'OK'
+        data:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: 'ivan@gamil.com'
+                username:
+                  type: string
+                  example: 'ivan'
+        token:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Iml2YW4iLCJpYXQiOjE1MTMwNzAyNjN9.JNFfiyvPIXTv0zdd9mI3ggWeZemFvxXduM5oiA0DnWg'
+  jwtUnauthorized:
+    description: Authenticate exception
+    schema:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: 'Unauthorized'
+        data:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'Invalid token'
