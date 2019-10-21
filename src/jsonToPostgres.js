@@ -1,8 +1,8 @@
 import path from 'path';
-import fs from 'fs';
 import Sequelize from 'sequelize';
 import Output from './utils/output';
 import config from './config';
+import File from './utils/file';
 
 const SOURCES = {
     users: path.join(__dirname, config.dataPath, 'users.json'),
@@ -16,28 +16,15 @@ const sequelize = new Sequelize('postgres', 'postgres', '123456', {
 });
 
 class ImportData {
-    static readJSON(source) {
-        let data = [];
-
-        try {
-            data = fs.readFileSync(source);
-            return JSON.parse(data.toString());
-        } catch (err) {
-            Output.write(err);
-        }
-
-        return data;
-    }
-
     static users() {
-        let data = ImportData.readJSON(SOURCES.users);
+        let data = File.readJSON(SOURCES.users);
         let Users = sequelize.import(path.join(__dirname, 'models/user.js'));
 
         return Promise.all(data.map(userData => Users.create(userData)));
     }
 
     static products() {
-        let data = ImportData.readJSON(SOURCES.products);
+        let data = File.readJSON(SOURCES.products);
         let Products = sequelize.import(path.join(__dirname, 'models/product.js'));
 
         return Promise.all(data.map(productData => Products.create(productData)));

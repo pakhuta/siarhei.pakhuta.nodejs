@@ -1,5 +1,5 @@
-import Storage from '../../services/storage';
+import Mongoose from '../../services/mongoDB/mongoose';
 
 export default async function getUsers(req, res) {
-    res.send(await Storage.get('users'));
+    res.send(await Mongoose.get('users'));
 }

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "name": "Brest",
+    "country": "Belarus",
+    "capital": false,
+    "location": {
+      "lat": 52.097621,
+      "long": 23.734050
+    }
+  },
+  {
+    "id": "2",
+    "name": "Grodno",
+    "country": "Belarus",
+    "capital": false,
+    "location": {
+      "lat": 50.097621,
+      "long": 25.734050
+    }
+  },
+  {
+    "id": "3",
+    "name": "Vitebsk",
+    "country": "Belarus",
+    "capital": false,
+    "location": {
+      "lat": 48.097621,
+      "long": 25.734050
+    }
+  },
+  {
+    "id": "4",
+    "name": "Mogilev",
+    "country": "Belarus",
+    "capital": false,
+    "location": {
+      "lat": 48.096221,
+      "long": 24.484050
+    }
+  },
+  {
+    "id": "5",
+    "name": "Gomel",
+    "country": "Belarus",
+    "capital": false,
+    "location": {
+      "lat": 54.096221,
+      "long": 28.484050
+    }
+  },
+  {
+    "id": "6",
+    "name": "Minsk",
+    "country": "Belarus",
+    "capital": true,
+    "location": {
+      "lat": 52.123221,
+      "long": 27.132050
+    }
+  }
+]
