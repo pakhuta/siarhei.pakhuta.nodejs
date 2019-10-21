@@ -48,6 +48,7 @@
     "sequelize": "4.23.0",
     "sequelize-cli": "3.2.0",
     "split2": "2.2.0",
+    "swagger": "0.7.5",
     "through2": "2.0.3"
   },
   "devDependencies": {

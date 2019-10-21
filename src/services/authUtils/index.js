@@ -1,14 +1,14 @@
-import Storage from '../storage';
+import Mongoose from '../mongoDB/mongoose';
 
 let tokens = new Set();
 
 export default class AuthUtils {
     static getUserByCredentials(login, password) {
-        return Storage.get('users', [{ name: 'name', value: login }, { name: 'password', value: password }]);
+        return Mongoose.get('users', [{ name: 'name', value: login }, { name: 'password', value: password }]);
     }
 
     static getUserById(userId) {
-        return Storage.get('users', [{ name: 'id', value: userId }]);
+        return Mongoose.get('users', [{ name: 'id', value: userId }]);
     }
 
     static addToken(token) {
