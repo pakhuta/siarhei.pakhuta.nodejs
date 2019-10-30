@@ -45,7 +45,7 @@
     "passport-twitter": "1.0.4",
     "pg": "6.4.2",
     "request": "2.83.0",
-    "sequelize": "4.23.0",
+    "sequelize": "5.15.1",
     "sequelize-cli": "3.2.0",
     "split2": "2.2.0",
     "swagger": "0.7.5",
